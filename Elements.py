@@ -1,4 +1,3 @@
-# Take right corner to explode the exploding brick
 from random import randint
 
 # Parent class for Elements in game 
@@ -8,23 +7,23 @@ class Elements():
 		self.x = x
 		self.y = y
 
-# Child class for Paddle
+# derived class for PowerUp
+class PowerUp():
+	def __init__(self,powtype,x,y):
+		Elements.__init__(self,powtype,x,y)
+		self.ptype = powtype
+		self.previous = " "
+		self.status = 0
+		self.ptime = 100
+		# 100 secs of powerup and status will tell us that the power-up has to be kept activated or not?
+
+# derived class for Paddle
 class Paddle():
-	def __init__(self):
-		Elements.__init__(self,'p',25,37)
-
-# Child class for short paddle
-class ShortPaddle():
-	def __init__(self):
-		Elements.__init__(self,'SP',25,37)
-		
-# Child class for long paddle
-class LongPaddle():
-	def __init__(self):
-		Elements.__init__(self,'LP',25,37)
+	def __init__(self,ptype):
+		Elements.__init__(self,ptype,25,40)
 
 
-# Child class for Ball
+# derived class for Ball
 class Ball():
 	def __init__(self,x,y):
 		Elements.__init__(self,'b',x,y)
@@ -32,77 +31,10 @@ class Ball():
 		self.diry=-1
 		self.speed=1
 
-# Child class for Brick1
-class Brick1():
-	def __init__(self,x,y):
-		Elements.__init__(self,'b1',x,y)
-		self.btype='b1'
-
-# Child class for Brick2
-class Brick2():
-	def __init__(self,x,y):
-		Elements.__init__(self,'b2',x,y)
-		self.btype='b2'
-		
-# Child class for Brick3
-class Brick3():
-	def __init__(self,x,y):
-		Elements.__init__(self,'b3',x,y)
-		self.btype='b3'
-		
-#Child class for Unbreakable brick
-class UBrick():
-	def __init__(self,x,y):
-		Elements.__init__(self,'U',x,y)
-		self.btype='U'
-
-#Child class for Explodable brick brick
-class EBrick():
-	def __init__(self,x,y):
-		Elements.__init__(self,'$',x,y)
-		self.btype='$'
-
-
-# Parent class for PowerUp
-class PowerUp():
-	def __init__(self,ptype,x,y):
-		self.ptype = ptype
-		self.x = x
-		self.y = y
-		self.previous = " "
-		self.status = 0
-		self.ptime = 100
-		# 100 secs of powerup and status will tell us that the power-up has to be kept activated or not?
-
-class E_PowerUp():
-	def __init__(self,x,y):
-		PowerUp.__init__(self,'E',x,y)
-		self.ptype = 'E'
-
-class S_PowerUp():
-	def __init__(self,x,y):
-		PowerUp.__init__(self,'S',x,y)
-		self.ptype = 'S'
-
-class B_PowerUp():
-	def __init__(self,x,y):
-		PowerUp.__init__(self,'B',x,y)
-		self.ptype = 'B'
-
-class F_PowerUp():
-	def __init__(self,x,y):
-		PowerUp.__init__(self,'F',x,y)
-		self.ptype = 'F'
-
-class T_PowerUp():
-	def __init__(self,x,y):
-		PowerUp.__init__(self,'T',x,y)
-		self.ptype = 'T'
-
-class P_PowerUp():
-	def __init__(self,x,y):
-		PowerUp.__init__(self,'P',x,y)
-		self.ptype = 'P'
+# derived class for Brick1
+class Brick():
+	def __init__(self,btype,x,y):
+		Elements.__init__(self,btype,x,y)
 	
 
 # Stroing all the PowerUps in an array
@@ -110,115 +42,93 @@ def PowerUpArray(board,x,y):
 	power = []
 	a=0
 	b=0
-	# power.append(E_PowerUp(24,35))
-	for i in range(7):
+	# power.append(PowerUp('T',24,35))
+	for i in range(6):
 		while(1):
-			a = randint(1,x-2)
-			b = randint(1,y-2)
-			# Some of values of b are removed because these will be exploded by explodable bricks
-			if (board[b][a] == 'b1' or board[b][a] == 'b2' or board[b][a] == 'b3') and b!=5 and b!=4:
+			a = randint(1,40)
+			b = randint(5,7)
+			if (board[b][a] == 'b1' or board[b][a] == 'b2' or board[b][a] == 'b3'):
 				break
+		ch = ''
 		if i==0:
-			power.append(E_PowerUp(a,b))
+			ch = 'E'
 		elif i==1:
-			power.append(S_PowerUp(a,b))
+			ch = 'S'
 		elif i==2:
-			power.append(B_PowerUp(a,b))
+			ch = 'B'
 		elif i==3:
-			power.append(B_PowerUp(a,b))
+			ch = 'F'
 		elif i==4:
-			power.append(F_PowerUp(a,b))
+			ch = 'T'
 		elif i==5:
-			power.append(T_PowerUp(a,b))
-		elif i==6:
-			power.append(P_PowerUp(a,b))
+			ch = 'P'
+		power.append(PowerUp(ch,a,b))
 
 	return power
+
+# Just a lazy optimization ;-)
+def make_brick(a,b,bricks,board,flag):
+	for i in range(1,11):
+		for j in range(i):
+			f = randint(1,3)
+			ch = ''
+			if f==1:
+				ch = 'b1'
+			elif f==2:
+				ch = 'b2'
+			else:
+				ch = 'b3'
+
+			bricks.append(Brick(ch,a+flag*j,b-i))
+			board[b-i][a+flag*j] = ch
+
+	return bricks
 
 # function to assign bricks to the board
 def BricksArray(board):
 	bricks = []
 
-	a = 5
-	b = 15
-	for i in range(1,11):
-		for j in range(i):
-			f = randint(1,3)
+	bricks = make_brick(5,15,bricks,board,1)
+	bricks = make_brick(58,15,bricks,board,-1)
 
-			if f==1:
-				bricks.append(Brick1(a+j,b-i))
-				board[b-i][a+j] = 'b1'
-
-			elif f==2:
-				bricks.append(Brick2(a+j,b-i))
-				board[b-i][a+j] = 'b2'
-
-			else:
-				bricks.append(Brick3(a+j,b-i))
-				board[b-i][a+j] = 'b3'
-	
-	a = 58
-	b = 15
-	for i in range(1,11):
-		for j in range(i):
-			f = randint(1,3)
-
-			if f==1:
-				bricks.append(Brick1(a-j,b-i))
-				board[b-i][a-j] = 'b1'
-
-			elif f==2:
-				bricks.append(Brick2(a-j,b-i))
-				board[b-i][a-j] = 'b2'
-
-			else:
-				bricks.append(Brick3(a-j,b-i))
-				board[b-i][a-j] = 'b3'
-		
-	a = 31
-	b = 19
-	bricks.append(Brick1(a,b))
-	board[b][a] = 'b1'
-	for i in range(1,15):
-		bricks.append(Brick1(a+i,b-i))
-		board[b-i][a+i] = 'b1'
-		bricks.append(Brick1(a-i,b-i))
-		board[b-i][a-i] = 'b1'
-
+	a = 15
+	b = 18
+	for i in range(30):
+		bricks.append(Brick('b1',a+i,b))
+		board[b][a+i] = 'b1'
 
 	a = 31
 	b = 14
 	for i in range(10):
 		if i<5:
 			for j in range(2*i+1):
-				bricks.append(UBrick(a-j+i,b-i))
+				bricks.append(Brick('U',a-j+i,b-i))
 				board[b-i][a-j+i] = 'U'
 
 		elif i == 5:
 			for j in range(2*i+1):
-				bricks.append(EBrick(a-j+i,b-i))
+				bricks.append(Brick('$',a-j+i,b-i))
 				board[b-i][a-j+i] = '$'
 
 		else:
 			for j in range(2*i+1):
 				f = randint(1,3)
-
+				ch = ''
 				if f==1:
-					bricks.append(Brick1(a-j+i,b-i))
-					board[b-i][a-j+i] = 'b1'
-
+					ch = 'b1'
 				elif f==2:
-					bricks.append(Brick2(a-j+i,b-i))
-					board[b-i][a-j+i] = 'b2'
-
+					ch = 'b2'
 				else:
-					bricks.append(Brick3(a-j+i,b-i))
-					board[b-i][a-j+i] = 'b3'
+					ch = 'b3'
+				bricks.append(Brick(ch,a-j+i,b-i))
+				board[b-i][a-j+i] = ch
 
+	# These set of bricks are just used to test the power-ups
+	# Take the right corner to explode the explode brick
 	# a= 15
 	# b= 35
 	# for i in range(10):
-	# 	bricks.append(Brick1(a+i,b))
+	# 	bricks.append(Brick('b1',a+i,b))
 	# 	board[b][a+i] = 'b1'
 
 	return bricks
