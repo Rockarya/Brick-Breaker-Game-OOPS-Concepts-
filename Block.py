@@ -1,3 +1,5 @@
+from random import randint
+
 class Block():
 
 	def __init__(self):
@@ -10,6 +12,8 @@ class Block():
 		self.brick1_structure = "%"
 		self.brick2_structure = "&"
 		self.brick3_structure = "@"
+		self.rainbow_structure = '?'
+		self.bullet_structure = '*'
 		self.Ubrick_structure = "#"
 		self.Ebrick_structure = "$"
 		self.Expandpaddle_structure = "E"
@@ -17,7 +21,9 @@ class Block():
 		self.Ballmultiplier_structure = "B"
 		self.Fastball_structure = "F"
 		self.Thuruball_structure = "T"
+		self.Fireball_structure = "A"
 		self.Paddlegrab_structure = "P"
+		self.ShootingPaddle_structure = "G"
 
 	def getBlock(self,a):
 		
@@ -48,6 +54,20 @@ class Block():
 		elif a == 'b3':
 			return self.brick3_structure
 
+		elif a == 'r':
+			f = randint(1,3)
+			if f==1:
+				self.rainbow_structure = '%'
+			elif f==2:
+				self.rainbow_structure = '&'
+			else:
+				self.rainbow_structure = '@'
+
+			return self.rainbow_structure
+
+		elif a == '*':
+			return self.bullet_structure
+
 		elif a == 'U':
 			return self.Ubrick_structure
 
@@ -71,6 +91,48 @@ class Block():
 
 		elif a == 'P':
 			return self.Paddlegrab_structure
+
+		elif a == 'G':
+			return self.ShootingPaddle_structure
+
+		elif a == 'A':
+			return self.Fireball_structure
+
+		# "    (o o)_(o o)",
+		# "      Y     Y",
+		# " _.-~===========~-._",
+		# "(__________________)",
+		# "     |_______|"
+		# 	UFO STRUCTURE
+		elif a == '_':
+			return '_'
+		elif a == '/':
+			return '/'
+		elif a == '(':
+			return '('
+		elif a == '0':
+			return '0'
+		elif a == ')':
+			return ')'
+		elif a == '~':
+			return '~'
+		elif a == '.':
+			return '.'
+		elif a == '-':
+			return '-'
+		elif a == '=':
+			return '='
+		elif a == 'Y':
+			return 'Y'
+		elif a == '|':
+			return '|'
+
+		# Bomb structure
+		elif a == 'X':
+			return 'X'
+
+		elif a == '+':
+			return '+'
 								
 		else :
 			return "errr"
@@ -126,6 +188,31 @@ class Block():
 
 		elif a == 'P':
 			return 'yellow'	
-								
+
+		elif a == 'G':
+			return 'magenta'	
+
+		elif a == 'A':
+			return 'yellow'	
+
+		elif a == 'r':
+			if self.rainbow_structure == '%':
+				return 'red'
+			elif self.rainbow_structure == '&':
+				return 'green'
+			else:	
+				return 'blue'
+
+		# UFO COLOR
+		elif a == '_' or a == '/' or a == 'Y' or a == '(' or  a == '0' or a == ')' or a == '~' or a == '.' or a == '-' or a == '=' or a == '|':
+			return 'magenta'
+
+		# Bomb Structure
+		elif a == 'X':
+			return 'red'
+
+		elif a == '+':
+			return 'green'
+	
 		else :
 			return 'black'

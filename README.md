@@ -75,6 +75,7 @@ Power-Ups:-
 How to run?
 -> pip3 install termcolor
 -> pip3 install colorama
+-> pip3 install playsound
 -> python3 game.py
 	
 	HOPEFULLY YOU ENJOY PLAYING IT! 
@@ -82,3 +83,18 @@ How to run?
 	
 
 GAME TIP :- "Choose the rightmmost side to have a score-rich move for the game ;-)"
+
+NEW FUNCTIONALITIES:-
+-> Implemented levels(use 'l' to skip levels)
+
+-> Bricks starts falling after a particular time in a level whenever ball hits the paddle
+
+-> Rainbow Bricks:- Bricks keep changing colors until first hit
+
+-> Power-Ups attain the ball velocity after hitting and follows elastic collision
+
+-> Level3 is Boss Enemy where your task is to destroy the UFO
+
+-> Added Power Up of Fireball('A') which after enabled will destroy all the bricks horizontally/vertically/diagonally from a given brick when ball hits this brick.
+
+-> Added sounds to make game more enjoyable.

@@ -1,4 +1,12 @@
 from Elements import Ball
+import random, sys, os, time, copy, signal
+from playsound import playsound
+
+def wall_hit_sound():
+	# Input an existing mp3 filename
+	mp3File = "./sounds/brickhit.WAV"
+	# Play the mp3 file
+	playsound(mp3File)
 
 class Balls():
 	def __init__(self,x,y,orignal,bricks,power,points,paddle):
@@ -11,10 +19,10 @@ class Balls():
 		self.paddle = paddle.paddle
 		self.ShortPaddle = paddle.ShortPaddle
 		self.LongPaddle = paddle.LongPaddle
-		self.ball = Ball(self.paddle.x+5,self.paddle.y-1)
+	
+		self.ball = Ball('b',self.paddle.x+5,self.paddle.y-1)
 
-		self.orignal[self.ball.y][self.ball.x] = self.ball.etype
-
+		self.orignal[self.ball.y][self.ball.x] = self.ball.balltype
 
 	def Ball_on_Paddle(self,game):
 		paddle_flag = 0
@@ -91,6 +99,13 @@ class Balls():
 		speed = self.ball.speed
 
 		IS_GAMEOVER_FLAG = 0
+		f = 0
+		paddle_flag = 0
+		for pup in self.power:
+			if pup.ptype == 'S' and pup.status == 1:
+				paddle_flag = -1
+			elif pup.ptype == 'E' and pup.status == 1:
+				paddle_flag = 1		
 
 		k=0
 		# flag will be non-zero if ball collides the paddle.On colliding paddle we need to change the ball speed and if flag is 0 that means ball is in air
@@ -114,14 +129,6 @@ class Balls():
 			dirx = self.ball.dirx
 			diry = self.ball.diry
 
-			paddle_flag = 0
-			for pup in self.power:
-				if pup.ptype == 'S' and pup.status == 1:
-					paddle_flag = -1
-				elif pup.ptype == 'E' and pup.status == 1:
-					paddle_flag = 1		
-					
-
 			if paddle_flag == 0:	
 				if y+diry == self.paddle.y:
 					f=0
@@ -139,7 +146,7 @@ class Balls():
 								flag = 1
 
 							i+=1
-							break;
+							break
 					if f==0:
 						self.orignal[y][x] = ' '
 						self.orignal[self.paddle.y][self.paddle.x] = ' '
@@ -155,9 +162,11 @@ class Balls():
 
 				elif y+diry==DOWN or y+diry==UP:
 					self.ball.diry*=(-1)
+					wall_hit_sound()
 
 				elif x+dirx==LEFT or x+dirx==RIGHT:
 					self.ball.dirx*=(-1)
+					wall_hit_sound()
 
 
 			elif paddle_flag == -1:
@@ -191,10 +200,11 @@ class Balls():
 
 				elif y+diry==DOWN or y+diry==UP:
 					self.ball.diry*=(-1)
+					wall_hit_sound()
 
 				elif x+dirx==LEFT or x+dirx==RIGHT:
 					self.ball.dirx*=(-1)
-
+					wall_hit_sound()
 
 			else:
 				if y+diry == self.LongPaddle.y:
@@ -228,18 +238,26 @@ class Balls():
 
 				elif y+diry==DOWN or y+diry==UP:
 					self.ball.diry*=(-1)
+					wall_hit_sound()
 
 				elif x+dirx==LEFT or x+dirx==RIGHT:
 					self.ball.dirx*=(-1)
+					wall_hit_sound()
 
 
 		# Power-Up enabler
 		for pup in self.power:
-			if pup.y+1 == self.paddle.y:
-				for i in range(10):
-					if self.paddle.x + i == pup.x:
+			if pup.y + 1 == self.paddle.y:
+				for i in range(10 + 5*paddle_flag):
+					if self.paddle.x + i == pup.x and pup.status == 0:
 						self.orignal[pup.y][pup.x] = ' '
 						pup.status = 1
+						# Input an existing mp3 filename
+						mp3File = "./sounds/M_YEAH.WAV"
+						# Play the mp3 file
+						playsound(mp3File)
+						break
+
 
 		if IS_GAMEOVER_FLAG == 1:
 			self.orignal[self.y-3][self.x-5] = ' '
@@ -262,3 +280,6 @@ class Balls():
 
 		if flag!=0:
 			self.ball.speed = flag
+
+		# This f value will tell that ball striked the paddle or not(falling bricks triggered if ball strikes the padlle)
+		return f

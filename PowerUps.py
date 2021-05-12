@@ -1,4 +1,11 @@
 from Elements import PowerUp
+from playsound import playsound
+
+def wall_hit_sound():
+	# Input an existing mp3 filename
+	mp3File = "./sounds/brickhit.WAV"
+	# Play the mp3 file
+	playsound(mp3File)
 
 class PowerUps():
 	def __init__(self,x,y,orignal,bricks,power,points,paddle,ball,brick):
@@ -16,17 +23,11 @@ class PowerUps():
 		self.LongPaddle = paddle.LongPaddle
 
 
-	def move_Power_Up(self,game):
-		for pup in self.power:
-			if pup.ptype == 'F' and self.F == 1:
-				x = pup.x
-				y = pup.y
-				self.orignal[y][x] = pup.previous
-				pup.previous = self.orignal[y+1][x]
-				self.orignal[y+1][x] = 'F'
-
-
 	def Update_PowerUp(self,game):
+		UP = 0
+		DOWN = self.y -1
+		LEFT = 0
+		RIGHT = self.x-1	
 		for pup in self.power:
 			if self.orignal[pup.y][pup.x] == pup.ptype:
 
@@ -35,11 +36,20 @@ class PowerUps():
 					self.power.remove(pup)
 
 				# Only obstacle which will hinder is the ball only in path	
-				elif self.orignal[pup.y+1][pup.x] != 'b':
+				elif self.orignal[pup.y + pup.diry][pup.x + pup.dirx] != 'b':
+					if pup.y+pup.diry==DOWN or pup.y+pup.diry==UP:
+						pup.diry*=(-1)
+						wall_hit_sound()
+
+					elif pup.x+pup.dirx==LEFT or pup.x+pup.dirx==RIGHT:
+						pup.dirx*=(-1)
+						wall_hit_sound()
+						
 					self.orignal[pup.y][pup.x] = pup.previous
-					pup.previous = self.orignal[pup.y+1][pup.x]
-					self.orignal[pup.y+1][pup.x] = pup.ptype
-					pup.y+=1
+					pup.previous = self.orignal[pup.y + pup.diry][pup.x + pup.dirx]
+					self.orignal[pup.y + pup.diry][pup.x + pup.dirx] = pup.ptype
+					pup.x += pup.dirx
+					pup.y += pup.diry
 
 
 	def Remove_PowerUp(self,game):

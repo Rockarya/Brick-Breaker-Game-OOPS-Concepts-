@@ -41,6 +41,7 @@ def instructions():
 	cprint("@ : Can be broken after 3 strikes(+3)",'blue',attrs=['bold'])
 	cprint("# : Unbreakable bricks (Can be broken by Thuru-ball only)",'white',attrs=['bold'])
 	cprint("$ : Explodable bricks (Hit any of these bricks to destroy all the bricks present adjacent to it)",'yellow',attrs=['bold'])
+	cprint("%/&/@ : Rainbow bricks (After hitting this brick it will no more change it's color)",'magenta',attrs=['bold'])
 	cprint("\nKeys")
 	cprint("a : Left\nd : Right\ns : Shoot the ball after every new life\n",'yellow',attrs=['bold'])
 	cprint("q : exit the program",'red',attrs=['bold'])

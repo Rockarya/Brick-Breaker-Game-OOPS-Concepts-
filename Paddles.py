@@ -1,13 +1,14 @@
 from Elements import Paddle
 
 class Paddles():
-	def __init__(self,x,y,orignal,bricks,power,points):
+	def __init__(self,x,y,orignal,bricks,power,points,level):
 		self.x = x
 		self.y = y
 		self.orignal = orignal
 		self.bricks = bricks
 		self.power = power
 		self.points = points
+		self.level = level
 
 		self.paddle = Paddle('p')
 		self.ShortPaddle = Paddle('SP')
